@@ -1,0 +1,52 @@
+services:
+  spark-master:
+    build: .
+    container_name: spark-master
+    hostname: spark-master
+    networks:
+      - spark-network
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - SPARK_MASTER_HOST=0.0.0.0  # The Spark master binds to spark-master by default, but Docker requires it to listen on 0.0.0.0
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MASTER_WEBUI_PORT=8080
+    volumes:
+      - ./data:/data
+      - spark-logs:/opt/logs
+    command: sh -c "/opt/spark/sbin/start-master.sh -p 7077 && tail -f /dev/null"
+
+  spark-worker:
+    build: .
+    container_name: spark-worker
+    hostname: spark-worker
+    networks:
+      - spark-network
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=2g
+      - SPARK_WORKER_WEBUI_PORT=8081
+      - SPARK_LOCAL_IP=spark-worker  # Required for DNS resolution
+      - SPARK_WORKER_HOST=spark-worker
+    volumes:
+      - ./data:/data
+      - spark-logs:/opt/logs
+    command: sh -c "/opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f /dev/null"
+
+networks:
+  spark-network:
+    driver: bridge
+
+volumes:
+  spark-logs:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./logs  # Persist logs to host
