@@ -4,7 +4,8 @@ services:
     build: .
     platform: linux/amd64
     volumes:
-      - "./sparkdata:/sparkdata"
+      - "./spark-data:/home/jovyan/spark-data"
+      - "./notebooks:/home/jovyan/work"
     ports:
       - '8080:8080'
       - '8888:8888'   # this port is for jupyter notebook
