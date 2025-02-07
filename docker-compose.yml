@@ -1,26 +1,10 @@
 services:
-  spark:
-    build: .
-    environment:
-      - SPARK_MODE=master
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
+  pyspark_notebook:
+    container_name: pyspark_notebook
+    image: jupyter/pyspark-notebook:latest
+    platform: linux/amd64
+    volumes:
+      - "./sparkdata:/sparkdata"
     ports:
       - '8080:8080'
-      - '7077:7077'
-
-  spark-worker:
-    build: .
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark:7077
-      - SPARK_WORKER_MEMORY=2G
-      - SPARK_WORKER_CORES=2
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
+      - '8888:8888'   # this port is for jupyter notebook
