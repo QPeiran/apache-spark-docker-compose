@@ -1,1 +1,1 @@
-FROM bitnami/spark:3.5.1
+FROM jupyter/pyspark-notebook:latest

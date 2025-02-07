@@ -1,7 +1,7 @@
 services:
   pyspark_notebook:
     container_name: pyspark_notebook
-    image: jupyter/pyspark-notebook:latest
+    build: .
     platform: linux/amd64
     volumes:
       - "./sparkdata:/sparkdata"
