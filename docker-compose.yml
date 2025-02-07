@@ -1,0 +1,10 @@
+services:
+  pyspark_notebook:
+    container_name: pyspark_notebook
+    build: .
+    platform: linux/amd64
+    volumes:
+      - "./sparkdata:/sparkdata"
+    ports:
+      - '8080:8080'
+      - '8888:8888'   # this port is for jupyter notebook
